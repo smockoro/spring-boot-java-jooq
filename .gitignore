@@ -30,3 +30,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+./mysql/mysql_data
+
+./src/main/generated-jooq
