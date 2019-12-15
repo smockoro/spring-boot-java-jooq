@@ -1,0 +1,77 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.2.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'java'
+	id("nu.studer.jooq") version "3.0.0"
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '8'
+
+repositories {
+	mavenCentral()
+}
+
+sourceSets {
+	main.java.srcDirs += "src/main/java"
+	main.java.srcDirs += "src/main/generated-jooq"
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-jooq'
+	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	runtimeOnly("mysql:mysql-connector-java:8.0.15")
+	implementation("org.jooq:jooq")
+	implementation("org.jooq:jooq-parent")
+	implementation("org.jooq:jooq-meta")
+	implementation("org.jooq:jooq-codegen")
+	implementation("org.jooq:jooq-meta-extensions")
+	jooqRuntime("mysql:mysql-connector-java:8.0.15")
+	jooqRuntime("javax.activation:activation:1.1.1")
+	jooqRuntime("javax.xml.bind:jaxb-api:2.3.0")
+	jooqRuntime("com.sun.xml.bind:jaxb-core:2.3.0.1")
+	jooqRuntime("com.sun.xml.bind:jaxb-impl:2.3.0.1")
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	//testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
+	testImplementation 'com.ninja-squad:DbSetup:2.1.0'
+}
+
+jooq {
+	version = "3.11.7"
+	edition = "OSS"
+	spring_java_jooq(sourceSets.main) {
+		jdbc {
+			driver = "com.mysql.jdbc.Driver"
+			url = "jdbc:mysql://127.0.0.1:3306/spring_java_jooq?nullNamePatternMatchesAll=true&createDatabaseIfNotExist=true&useSSL=false"
+			user = "root"
+			password = "password"
+		}
+		generator {
+			name = "org.jooq.codegen.DefaultGenerator"
+			database {
+				name = "org.jooq.meta.mysql.MySQLDatabase"
+				inputSchema = "spring_java_jooq"
+				includes = '.*'
+				excludes = ''
+				outputSchemaToDefault = true
+			}
+			generate {
+				javaTimeTypes = true
+			}
+			target {
+				packageName = "spring.java.jooq.generated.jooq"
+				directory = "src/main/generated-jooq/"
+			}
+		}
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
