@@ -5,11 +5,12 @@ import com.example.springbootjavajooq.repository.ArtistRepository;
 import com.ninja_squad.dbsetup.DbSetup;
 import static com.ninja_squad.dbsetup.Operations.*;
 
-import com.ninja_squad.dbsetup.Operations;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
 import com.ninja_squad.dbsetup.operation.DeleteAll;
 import com.ninja_squad.dbsetup.operation.Insert;
 import com.ninja_squad.dbsetup.operation.Operation;
+import org.assertj.db.type.Request;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,14 @@ class ArtistRepositoryImplTest {
         Artist artist = new Artist(1, "Afrojack");
         Artist result = artistRepository.create(artist);
         assertEquals(artist.getName(), result.getName());
+    }
+
+    @Test
+    void update() {
+        Artist artist = new Artist(1, "ZEDD");
+        int result = artistRepository.update(artist);
+        assertEquals(1, result);
+        Request req = new Request(dataSource, "select * from artist where id = 1");
     }
 
 }

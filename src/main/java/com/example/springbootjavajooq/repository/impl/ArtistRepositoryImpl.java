@@ -38,4 +38,13 @@ public class ArtistRepositoryImpl implements ArtistRepository {
                 .into(Artist.class);
         return result;
     }
+
+    @Override
+    public int update(Artist artist) {
+        int result = dslContext.update(ARTIST)
+                .set(ARTIST.NAME, artist.getName())
+                .where(ARTIST.ID.eq(artist.getId()))
+                .execute();
+        return result;
+    }
 }
